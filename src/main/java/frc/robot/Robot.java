@@ -5,9 +5,21 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
+import java.util.List;
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.trajectory.TrajectoryConfig;
+import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
  * each mode, as described in the TimedRobot documentation. If you change the name of this class or
@@ -19,7 +31,8 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
   public static String GameStage = "";
-
+  
+  private Trajectory m_trajectory;
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -27,9 +40,13 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     GameStage = "init";
-    // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
-    // autonomous chooser on the dashboard.
+    SmartDashboard.putString("GameStage: ", GameStage);
+    Mechanism2d mech = new Mechanism2d(3, 3);
+    SmartDashboard.putData("Mech2d", mech);
     m_robotContainer = new RobotContainer();
+
+    // Calculate trajectory from one point to another, given start, middle, end points and speed
+    m_trajectory = TrajectoryGenerator.generateTrajectory(new Pose2d(2,2, new Rotation2d()), List.of(), new Pose2d(6,4, new Rotation2d()), new TrajectoryConfig(2, 2));
   }
 
   /**
@@ -61,7 +78,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     GameStage = "auto";
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    SmartDashboard.putString("GameStage: ", GameStage);
 
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
@@ -76,6 +93,8 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopInit() {
     GameStage = "teleop";
+    SmartDashboard.putString("GameStage: ", GameStage);
+
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
@@ -101,9 +120,14 @@ public class Robot extends TimedRobot {
 
   /** This function is called once when the robot is first started up. */
   @Override
-  public void simulationInit() {}
+  public void simulationInit() {
+    GameStage = "simulation";
+    SmartDashboard.putString("GameStage: ", GameStage);
+  }
 
   /** This function is called periodically whilst in simulation. */
   @Override
-  public void simulationPeriodic() {}
+  public void simulationPeriodic() {
+    RobotContainer.m_drive.simulationPeriodic();
+  }
 }
