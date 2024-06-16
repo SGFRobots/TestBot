@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-// Limelight imports
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 // Power Distribution Board imports
 import edu.wpi.first.wpilibj.PowerDistribution;
@@ -44,15 +44,19 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the trigger bindings
     m_drive = new drivetrain();
-    // m_driveCommand = new DrivewithJoysticks(m_drive);
-    m_drive.setDefaultCommand(new DrivewithJoysticks(m_drive));
-    configureBindings();
+    m_driveCommand = new DrivewithJoysticks(m_drive);
+    // m_drive.setDefaultCommand(new DrivewithJoysticks(m_drive));
+    configureButtonBindings();
   }
 
-  private void configureBindings() {
+  private void configureButtonBindings() {
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
     // TODO understand how to do this ;)
+    
+    // Drive while left bumper is NOT held down
+    new JoystickButton(m_controller2, PS4Controller.Button.kL1.value).whileFalse(m_driveCommand);
+    new JoystickButton(m_controller, XboxController.Button.kLeftBumper.value).whileFalse(m_driveCommand);
   }
 
 

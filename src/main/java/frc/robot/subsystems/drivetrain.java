@@ -43,6 +43,8 @@ public class drivetrain extends SubsystemBase {
 
     // Stuff abt robot?
     private static DifferentialDrive Drive;
+    public double drive = 0;
+    public double turn = 0;
     // should be in constants
     private static final double kTrackWidth = 0.381 * 2;
     private static final double kWheelRadius = 0.0508;
@@ -116,18 +118,25 @@ public class drivetrain extends SubsystemBase {
     }
 
     // Move robot
-    public void setSpeeds(DifferentialDriveWheelSpeeds speed) {
-        var leftFeedForward = m_Feedforward.calculate(speed.leftMetersPerSecond);
-        var rightFeedForward = m_Feedforward.calculate(speed.rightMetersPerSecond);
-        double leftOutput = m_leftPIDController.calculate(m_leftEncoder.getRate(), speed.leftMetersPerSecond);
-        double rightOutput = m_rightPIDController.calculate(m_rightEncoder.getRate(), speed.rightMetersPerSecond);
-
-        leftMotor.setVoltage(leftOutput + leftFeedForward);
-        rightMotor.setVoltage(rightOutput + rightFeedForward);
+    public void stop() {
+        leftMotor.setVoltage(0);
+        rightMotor.setVoltage(0);
     }
+    
     // why do we need this?
-    public void drive(double drive, double turn) {
-        setSpeeds(m_kinematics.toWheelSpeeds(new ChassisSpeeds(drive, 0, turn)));
+    public void drive() {
+        drive = -drivetrain.driveFilter.calculate(RobotContainer.m_controller2.getLeftY()) / 2;
+        turn = -drivetrain.turnFilter.calculate(RobotContainer.m_controller2.getRightX()) / 2;
+        drive = -drivetrain.driveFilter.calculate(RobotContainer.m_controller.getLeftY()) / 2;
+        turn = -drivetrain.turnFilter.calculate(RobotContainer.m_controller.getRightX()) / 2;
+        if(RobotContainer.m_controller2.getCrossButton() || RobotContainer.m_controller.getXButton()) {
+            drive *= 2;
+        }
+        else if(RobotContainer.m_controller2.getR1Button() || RobotContainer.m_controller.getRightBumper()) {
+            drive /= 2;
+            turn /= 2;
+        }
+        Drive.arcadeDrive(drive, turn);
     }
 
     // Update position of robot
