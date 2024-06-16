@@ -14,6 +14,7 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // Limelight imports
 
@@ -27,21 +28,23 @@ import edu.wpi.first.wpilibj2.command.PrintCommand;
 import frc.robot.commands.DrivewithJoysticks;
 import frc.robot.subsystems.drivetrain;
 
-import edu.wpi.first.wpilibj.XboxController;
-
 
 
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  public static final drivetrain m_drive = new drivetrain();
+  public static drivetrain m_drive;
+  public static DrivewithJoysticks m_driveCommand;
 
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   public static final XboxController m_controller = new XboxController(0);
+  public static final PS4Controller m_controller2 = new PS4Controller(0);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
+    m_drive = new drivetrain();
+    // m_driveCommand = new DrivewithJoysticks(m_drive);
     m_drive.setDefaultCommand(new DrivewithJoysticks(m_drive));
     configureBindings();
   }
@@ -49,11 +52,12 @@ public class RobotContainer {
   private void configureBindings() {
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
-    // TODO understand how to do this
+    // TODO understand how to do this ;)
   }
 
 
   public void getAutonomousCommand() {
     // An example command will be run in autonomous
+    
   }
 }

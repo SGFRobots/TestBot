@@ -36,51 +36,47 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 
 public class drivetrain extends SubsystemBase {
     // Motors
-    TalonFX leftMotor;
-    TalonFX rightMotor;
-    TalonFX leftFollowerMotor;
-    TalonFX rightFollowerMotor;
+    private TalonFX leftMotor;
+    private TalonFX rightMotor;
+    private TalonFX leftFollowerMotor;
+    private TalonFX rightFollowerMotor;
 
-    // Stuff
-    DifferentialDrive Drive;
-    double setPosition = 0;
-    double drive;
-    double turn;
+    // Stuff abt robot?
+    private static DifferentialDrive Drive;
+    // should be in constants
     private static final double kTrackWidth = 0.381 * 2;
     private static final double kWheelRadius = 0.0508;
     private static final int kEncoderResolution = -4096;
 
-    PositionVoltage m_request = new PositionVoltage(0).withSlot(0);
-    public static SlewRateLimiter driveFilter = new SlewRateLimiter(Constants.driveSlewRateLimit);
-    public static SlewRateLimiter turnFilter = new SlewRateLimiter(Constants.turnSlewRateLimit);
+    // calculation stuff
+    public static final SlewRateLimiter driveFilter = new SlewRateLimiter(Constants.driveSlewRateLimit);
+    public static final SlewRateLimiter turnFilter = new SlewRateLimiter(Constants.turnSlewRateLimit);
+    private static final SimpleMotorFeedforward m_Feedforward = new SimpleMotorFeedforward(1, 3);
+    private static final PIDController m_leftPIDController = new PIDController(8.5, 0, 0);
+    private static final PIDController m_rightPIDController = new PIDController(8.5, 0, 0);
 
-    // Simulation stuff
-    Encoder m_leftEncoder;
-    Encoder m_rightEncoder;
-    private final PIDController m_leftPIDController = new PIDController(8.5, 0, 0);
-    private final PIDController m_rightPIDController = new PIDController(8.5, 0, 0);
-    AnalogGyro m_gyro;
+    // Encoders/gyro
+    private Encoder m_leftEncoder;
+    private Encoder m_rightEncoder;
+    private AnalogGyro m_gyro;
 
-    DifferentialDriveKinematics m_kinematics;
-    DifferentialDriveOdometry m_odometry;
-
-    private final SimpleMotorFeedforward m_Feedforward = new SimpleMotorFeedforward(1, 3);
-
-    AnalogGyroSim m_gyroSim;
-    EncoderSim m_leftEncoderSim;
-    EncoderSim m_rightEncoderSim;
-    Field2d m_fieldSim = new Field2d();
-    
-    LinearSystem<N2,N2,N2> m_drivetrainSystem;
-    DifferentialDrivetrainSim m_DrivetrainSimulator;
+    // Simulation Stuff
+    private static DifferentialDriveKinematics m_kinematics;
+    private DifferentialDriveOdometry m_odometry;
+    private AnalogGyroSim m_gyroSim;
+    private EncoderSim m_leftEncoderSim;
+    private EncoderSim m_rightEncoderSim;
+    private static final Field2d m_fieldSim = new Field2d();
+    private LinearSystem<N2,N2,N2> m_drivetrainSystem;
+    private DifferentialDrivetrainSim m_DrivetrainSimulator;
 
 
     public drivetrain() {
+        // Motors, encoders, gyro
         leftMotor = new TalonFX(Constants.leftMotorPort);
         rightMotor = new TalonFX(Constants.rightMotorPort);
         leftFollowerMotor = new TalonFX(Constants.leftFollowerMotorPort);
         rightFollowerMotor = new TalonFX(Constants.rightFollowerMotorPort);
-
         m_leftEncoder = new Encoder(0, 1);
         m_rightEncoder = new Encoder(2, 3);
         m_gyro = new AnalogGyro(0);
@@ -98,6 +94,7 @@ public class drivetrain extends SubsystemBase {
         // Get position on field
         m_odometry = new DifferentialDriveOdometry(m_gyro.getRotation2d(), m_leftEncoder.getDistance(), m_rightEncoder.getDistance());
 
+        // Set up motors
         leftFollowerMotor.setControl(new Follower(leftMotor.getDeviceID(), false));
         rightFollowerMotor.setControl(new Follower(rightMotor.getDeviceID(), false));
         leftMotor.setInverted(true);
@@ -105,12 +102,12 @@ public class drivetrain extends SubsystemBase {
         Drive = new DifferentialDrive(leftMotor, rightMotor);
         Drive.setExpiration(1);
         var slot0Configs = new Slot0Configs();
+        // should be in constants
         slot0Configs.kP = 0.04; // An error of 0.5 rotations results in 12 V output
         slot0Configs.kI = 0; // no output for integrated error
         slot0Configs.kD = 0.001; // A velocity of 1 rps results in 0.1 V output
         leftMotor.getConfigurator().apply(slot0Configs);
         rightMotor.getConfigurator().apply(slot0Configs);
-
         m_leftEncoder.setDistancePerPulse(2*Math.PI*kWheelRadius/kEncoderResolution);
         m_rightEncoder.setDistancePerPulse(2*Math.PI*kWheelRadius/kEncoderResolution);
         m_leftEncoder.reset();
@@ -118,6 +115,7 @@ public class drivetrain extends SubsystemBase {
         SmartDashboard.putData("Field", m_fieldSim);
     }
 
+    // Move robot
     public void setSpeeds(DifferentialDriveWheelSpeeds speed) {
         var leftFeedForward = m_Feedforward.calculate(speed.leftMetersPerSecond);
         var rightFeedForward = m_Feedforward.calculate(speed.rightMetersPerSecond);
@@ -127,23 +125,28 @@ public class drivetrain extends SubsystemBase {
         leftMotor.setVoltage(leftOutput + leftFeedForward);
         rightMotor.setVoltage(rightOutput + rightFeedForward);
     }
+    // why do we need this?
     public void drive(double drive, double turn) {
         setSpeeds(m_kinematics.toWheelSpeeds(new ChassisSpeeds(drive, 0, turn)));
     }
 
+    // Update position of robot
     public void updateOdometry() {
         m_odometry.update(m_gyro.getRotation2d(),m_leftEncoder.getDistance(),m_rightEncoder.getDistance());
     }
+    // Reset position of robot
     public void resetOdometry(Pose2d pose) {
         m_leftEncoder.reset();
         m_rightEncoder.reset();
         m_DrivetrainSimulator.setPose(pose);
         m_odometry.resetPosition(m_gyro.getRotation2d(), m_leftEncoder.getDistance(), m_rightEncoder.getDistance(), pose);
     }
+    // Get position of robot - is this necessary???
     public Pose2d getPose() {
         return m_odometry.getPoseMeters();
     }
     
+    // Update simulation
     public void simulationPeriodic() {
         m_DrivetrainSimulator.setInputs(leftMotor.get() * RobotController.getInputVoltage(), rightMotor.get() * RobotController.getInputVoltage());
         m_DrivetrainSimulator.update(0.02);
@@ -154,11 +157,13 @@ public class drivetrain extends SubsystemBase {
         m_gyroSim.setAngle(-m_DrivetrainSimulator.getHeading().getDegrees());
     }
 
+    // Uhhh idk
     public void periodic() {
         updateOdometry();
         m_fieldSim.setRobotPose(m_odometry.getPoseMeters());
     }
     
+    // Don't need this. just too lazy to delete
     public void arcadeDrive() {
         // if(!RobotContainer.m_controller.getRawButton(Constants.buttonHPort)) {
         //     drive = driveFilter.calculate(Util.inputCurve(RobotContainer.m_controller.getRawAxis(Constants.driveAxis), 1));
@@ -167,10 +172,10 @@ public class drivetrain extends SubsystemBase {
         //     drive = 0;
         //     turn = 0;
         // }
-        drive = driveFilter.calculate(Util.inputCurve(RobotContainer.m_controller.getLeftY(),1));
-        turn = driveFilter.calculate(Util.inputCurve(RobotContainer.m_controller.getRightX(), 1));
-        drive(drive, turn);
-        SmartDashboard.putNumber("Drive", drive);
-        SmartDashboard.putNumber("Turn", turn);
+        // drive = driveFilter.calculate(Util.inputCurve(RobotContainer.m_controller2.getLeftY(),1));
+        // turn = driveFilter.calculate(Util.inputCurve(RobotContainer.m_controller2.getRightX(), 1));
+        // drive(drive, turn);
+        // SmartDashboard.putNumber("Drive", drive);
+        // SmartDashboard.putNumber("Turn", turn);
     }
 }

@@ -20,6 +20,11 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.wpilibj.Timer;
+
+import frc.robot.RobotContainer;
+
+
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
  * each mode, as described in the TimedRobot documentation. If you change the name of this class or
@@ -28,11 +33,12 @@ import edu.wpi.first.math.trajectory.TrajectoryGenerator;
  */
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
-
+  
   private RobotContainer m_robotContainer;
   public static String GameStage = "";
   
   private Trajectory m_trajectory;
+  private final Timer m_timer = new Timer();
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -70,31 +76,35 @@ public class Robot extends TimedRobot {
   public void disabledInit() {
     GameStage = "disabled";
   }
-
+  
   @Override
   public void disabledPeriodic() {}
-
+  
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
     GameStage = "auto";
     SmartDashboard.putString("GameStage: ", GameStage);
-
+    m_timer.restart();
+    
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
   }
-
+  
   /** This function is called periodically during autonomous. */
   @Override
-  public void autonomousPeriodic() {}
-
+  public void autonomousPeriodic() {
+    double elapsed = m_timer.get();
+    System.out.println(elapsed);
+  }
+  
   @Override
   public void teleopInit() {
     GameStage = "teleop";
     SmartDashboard.putString("GameStage: ", GameStage);
-
+    
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
@@ -106,7 +116,9 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    // RobotContainer.m_driveCommand.execute();
+  }
 
   @Override
   public void testInit() {
