@@ -19,13 +19,39 @@
       }
     }
   },
+  "NetworkTables": {
+    "Retained Values": {
+      "open": false
+    },
+    "transitory": {
+      "SmartDashboard": {
+        "Field": {
+          "open": true
+        },
+        "open": true
+      }
+    }
+  },
   "NetworkTables Info": {
     "Clients": {
       "open": true
     },
+    "Connections": {
+      "open": true
+    },
+    "Server": {
+      "open": true
+    },
+    "shuffleboard@1": {
+      "open": true
+    },
     "visible": true
   },
-  "NetworkTables View": {
-    "visible": false
+  "Plot": {
+    "Plot <0>": {
+      "window": {
+        "visible": false
+      }
+    }
   }
 }

@@ -3,8 +3,6 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.controls.PositionDutyCycle;
-import com.ctre.phoenix6.controls.PositionVoltage;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -17,13 +15,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.Util;
-import frc.robot.commands.DrivewithJoysticks;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
-import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -45,10 +40,8 @@ public class drivetrain extends SubsystemBase {
     private static DifferentialDrive Drive;
     public double drive = 0;
     public double turn = 0;
-    // should be in constants
-    private static final double kTrackWidth = 0.381 * 2;
-    private static final double kWheelRadius = 0.0508;
-    private static final int kEncoderResolution = -4096;
+    public boolean slow = false;
+    public boolean fast = false;
 
     // calculation stuff
     public static final SlewRateLimiter driveFilter = new SlewRateLimiter(Constants.driveSlewRateLimit);
@@ -88,10 +81,10 @@ public class drivetrain extends SubsystemBase {
         m_leftEncoderSim = new EncoderSim(m_leftEncoder);
         m_rightEncoderSim = new EncoderSim(m_rightEncoder);
         m_drivetrainSystem = LinearSystemId.identifyDrivetrainSystem(1.98,0.2,1.5,0.3);
-        m_DrivetrainSimulator = new DifferentialDrivetrainSim(m_drivetrainSystem,DCMotor.getCIM(2),8,kTrackWidth,kWheelRadius,null);
+        m_DrivetrainSimulator = new DifferentialDrivetrainSim(m_drivetrainSystem,DCMotor.getCIM(2),8,Constants.kTrackWidth,Constants.kWheelRadius,null);
 
         // stuff - editors note, this really helps!
-        m_kinematics = new DifferentialDriveKinematics(kTrackWidth);
+        m_kinematics = new DifferentialDriveKinematics(Constants.kTrackWidth);
 
         // Get position on field
         m_odometry = new DifferentialDriveOdometry(m_gyro.getRotation2d(), m_leftEncoder.getDistance(), m_rightEncoder.getDistance());
@@ -110,33 +103,45 @@ public class drivetrain extends SubsystemBase {
         slot0Configs.kD = 0.001; // A velocity of 1 rps results in 0.1 V output
         leftMotor.getConfigurator().apply(slot0Configs);
         rightMotor.getConfigurator().apply(slot0Configs);
-        m_leftEncoder.setDistancePerPulse(2*Math.PI*kWheelRadius/kEncoderResolution);
-        m_rightEncoder.setDistancePerPulse(2*Math.PI*kWheelRadius/kEncoderResolution);
+        m_leftEncoder.setDistancePerPulse(2*Math.PI*Constants.kWheelRadius/Constants.kEncoderResolution);
+        m_rightEncoder.setDistancePerPulse(2*Math.PI*Constants.kWheelRadius/Constants.kEncoderResolution);
         m_leftEncoder.reset();
         m_rightEncoder.reset();
         SmartDashboard.putData("Field", m_fieldSim);
     }
 
-    // Move robot
+    // Completely stop
     public void stop() {
         leftMotor.setVoltage(0);
         rightMotor.setVoltage(0);
     }
     
-    // why do we need this?
+    // Drive function
     public void drive() {
-        drive = -drivetrain.driveFilter.calculate(RobotContainer.m_controller2.getLeftY()) / 2;
-        turn = -drivetrain.turnFilter.calculate(RobotContainer.m_controller2.getRightX()) / 2;
-        drive = -drivetrain.driveFilter.calculate(RobotContainer.m_controller.getLeftY()) / 2;
-        turn = -drivetrain.turnFilter.calculate(RobotContainer.m_controller.getRightX()) / 2;
-        if(RobotContainer.m_controller2.getCrossButton() || RobotContainer.m_controller.getXButton()) {
-            drive *= 2;
+        if(!RobotContainer.m_controller.getYButton() && !RobotContainer.m_controller2.getTriangleButton()) {
+            drive = -driveFilter.calculate(RobotContainer.m_controller2.getLeftY()) / 2;
+            turn = -turnFilter.calculate(RobotContainer.m_controller2.getRightX()) / 2;
+            drive = -driveFilter.calculate(RobotContainer.m_controller.getLeftY()) / 2;
+            turn = -turnFilter.calculate(RobotContainer.m_controller.getRightX()) / 2;
+            if(fast) {
+                fastMode();
+            }
+            if(slow) {
+                slowMode();
+            }
+            Drive.arcadeDrive(drive, turn);
+            SmartDashboard.putNumber("Drive value:", drive);
+        } else {
+            stop();
         }
-        else if(RobotContainer.m_controller2.getR1Button() || RobotContainer.m_controller.getRightBumper()) {
-            drive /= 2;
-            turn /= 2;
-        }
-        Drive.arcadeDrive(drive, turn);
+    }
+    // Speed control
+    public void slowMode() {
+        drive /= 2;
+        turn /= 2;
+    }
+    public void fastMode() {
+        drive *= 2;
     }
 
     // Update position of robot

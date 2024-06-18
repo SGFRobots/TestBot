@@ -95,6 +95,8 @@ public final class Constants {
     public static int maxHookR = 76;
     //Autos
     
-    private static final String kDefaultAuto = "Default";
-    private static final String kCustomAuto = "My Auto";
+    // Dimensions
+    public static double kTrackWidth = 0.381 * 2;
+    public static double kWheelRadius = 0.0508;
+    public static int kEncoderResolution = -4096;
 }

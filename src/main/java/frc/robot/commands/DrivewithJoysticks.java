@@ -2,8 +2,6 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
-import frc.robot.Util;
-import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.subsystems.drivetrain;
 
@@ -23,16 +21,11 @@ public class DrivewithJoysticks extends Command {
     @Override
     // runs every time the thingy passes (milisecond or something like that)
     public void execute() {
+        // drive robot
         if(Robot.GameStage == "teleop") {
             m_drive.drive();
             
         }
-    }
-
-    public void auto(double elapsed) {
-        if(elapsed < 5) {
-            // m_drive.drive(2, 0);
-        } 
     }
 
     @Override
