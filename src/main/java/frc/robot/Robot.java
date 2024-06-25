@@ -86,6 +86,7 @@ public class Robot extends TimedRobot {
     GameStage = "auto";
     SmartDashboard.putString("GameStage: ", GameStage);
     m_timer.restart();
+    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
     
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {

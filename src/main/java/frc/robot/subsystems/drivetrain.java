@@ -119,10 +119,8 @@ public class drivetrain extends SubsystemBase {
     // Drive function
     public void drive() {
         if(!RobotContainer.m_controller.getYButton() && !RobotContainer.m_controller2.getTriangleButton()) {
-            drive = -driveFilter.calculate(RobotContainer.m_controller2.getLeftY()) / 2;
-            turn = -turnFilter.calculate(RobotContainer.m_controller2.getRightX()) / 2;
-            drive = -driveFilter.calculate(RobotContainer.m_controller.getLeftY()) / 2;
-            turn = -turnFilter.calculate(RobotContainer.m_controller.getRightX()) / 2;
+            drive = getDrive();
+            turn = getTurn();
             if(fast) {
                 fastMode();
             }
@@ -135,6 +133,28 @@ public class drivetrain extends SubsystemBase {
             stop();
         }
     }
+
+    public double getDrive() {
+        if (((RobotContainer.m_controller2.getLeftY() < 0.09) && (RobotContainer.m_controller2.getLeftY() > -0.09)) && (RobotContainer.m_controller.getLeftY() < 0.09) && (RobotContainer.m_controller.getLeftY() > -0.09)) {
+            return 0;
+        }
+        drive = -driveFilter.calculate(RobotContainer.m_controller2.getLeftY()) / 2;
+        drive = -driveFilter.calculate(RobotContainer.m_controller.getLeftY()) / 2;
+        return drive;
+    }
+    public double getTurn() {
+        if (((RobotContainer.m_controller2.getRightX() < 0.09) && (RobotContainer.m_controller2.getRightX() > -0.09)) && (RobotContainer.m_controller.getRightX() < 0.09) && (RobotContainer.m_controller.getRightX() > -0.09)) {
+            return 0;
+        }
+        turn = -turnFilter.calculate(RobotContainer.m_controller2.getRightX()) / 2;
+        turn = -turnFilter.calculate(RobotContainer.m_controller.getRightX()) / 2;
+        return turn;
+    }
+
+    public void autoDrive(double driveV, double turnV) {
+        Drive.arcadeDrive(driveV, turnV);
+    }
+
     // Speed control
     public void slowMode() {
         drive /= 2;
