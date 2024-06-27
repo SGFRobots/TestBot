@@ -1,23 +1,17 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
-
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
-import frc.robot.RobotContainer;
-import frc.robot.Util;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.math.system.LinearSystem;
@@ -28,6 +22,8 @@ import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 import edu.wpi.first.wpilibj.simulation.EncoderSim;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 
+import frc.robot.Constants;
+import frc.robot.RobotContainer;
 
 public class drivetrain extends SubsystemBase {
     // Motors
@@ -46,9 +42,6 @@ public class drivetrain extends SubsystemBase {
     // calculation stuff
     public static final SlewRateLimiter driveFilter = new SlewRateLimiter(Constants.driveSlewRateLimit);
     public static final SlewRateLimiter turnFilter = new SlewRateLimiter(Constants.turnSlewRateLimit);
-    private static final SimpleMotorFeedforward m_Feedforward = new SimpleMotorFeedforward(1, 3);
-    private static final PIDController m_leftPIDController = new PIDController(8.5, 0, 0);
-    private static final PIDController m_rightPIDController = new PIDController(8.5, 0, 0);
 
     // Encoders/gyro
     private Encoder m_leftEncoder;
@@ -56,7 +49,6 @@ public class drivetrain extends SubsystemBase {
     private AnalogGyro m_gyro;
 
     // Simulation Stuff
-    private static DifferentialDriveKinematics m_kinematics;
     private DifferentialDriveOdometry m_odometry;
     private AnalogGyroSim m_gyroSim;
     private EncoderSim m_leftEncoderSim;
@@ -84,7 +76,6 @@ public class drivetrain extends SubsystemBase {
         m_DrivetrainSimulator = new DifferentialDrivetrainSim(m_drivetrainSystem,DCMotor.getCIM(2),8,Constants.kTrackWidth,Constants.kWheelRadius,null);
 
         // stuff - editors note, this really helps!
-        m_kinematics = new DifferentialDriveKinematics(Constants.kTrackWidth);
 
         // Get position on field
         m_odometry = new DifferentialDriveOdometry(m_gyro.getRotation2d(), m_leftEncoder.getDistance(), m_rightEncoder.getDistance());
@@ -123,17 +114,20 @@ public class drivetrain extends SubsystemBase {
             turn = getTurn();
             if(fast) {
                 fastMode();
+                System.out.println("fast");
             }
             if(slow) {
                 slowMode();
             }
             Drive.arcadeDrive(drive, turn);
-            SmartDashboard.putNumber("Drive value:", drive);
+            SmartDashboard.putNumber("Drive Value", drive);
+            SmartDashboard.putNumber("Turn Value", turn);
         } else {
             stop();
         }
     }
 
+    // Get Drive value
     public double getDrive() {
         if (((RobotContainer.m_controller2.getLeftY() < 0.09) && (RobotContainer.m_controller2.getLeftY() > -0.09)) && (RobotContainer.m_controller.getLeftY() < 0.09) && (RobotContainer.m_controller.getLeftY() > -0.09)) {
             return 0;
@@ -142,15 +136,18 @@ public class drivetrain extends SubsystemBase {
         drive = -driveFilter.calculate(RobotContainer.m_controller.getLeftY()) / 2;
         return drive;
     }
+    // Get Turn value
     public double getTurn() {
         if (((RobotContainer.m_controller2.getRightX() < 0.09) && (RobotContainer.m_controller2.getRightX() > -0.09)) && (RobotContainer.m_controller.getRightX() < 0.09) && (RobotContainer.m_controller.getRightX() > -0.09)) {
             return 0;
         }
         turn = -turnFilter.calculate(RobotContainer.m_controller2.getRightX()) / 2;
         turn = -turnFilter.calculate(RobotContainer.m_controller.getRightX()) / 2;
+        // System.out.println(turn);
         return turn;
     }
 
+    // Drive in autonomous
     public void autoDrive(double driveV, double turnV) {
         Drive.arcadeDrive(driveV, turnV);
     }
@@ -195,21 +192,5 @@ public class drivetrain extends SubsystemBase {
     public void periodic() {
         updateOdometry();
         m_fieldSim.setRobotPose(m_odometry.getPoseMeters());
-    }
-    
-    // Don't need this. just too lazy to delete
-    public void arcadeDrive() {
-        // if(!RobotContainer.m_controller.getRawButton(Constants.buttonHPort)) {
-        //     drive = driveFilter.calculate(Util.inputCurve(RobotContainer.m_controller.getRawAxis(Constants.driveAxis), 1));
-        //     turn = driveFilter.calculate(Util.inputCurve(RobotContainer.m_controller.getRawAxis(Constants.turnAxis), 1));
-        // } else {
-        //     drive = 0;
-        //     turn = 0;
-        // }
-        // drive = driveFilter.calculate(Util.inputCurve(RobotContainer.m_controller2.getLeftY(),1));
-        // turn = driveFilter.calculate(Util.inputCurve(RobotContainer.m_controller2.getRightX(), 1));
-        // drive(drive, turn);
-        // SmartDashboard.putNumber("Drive", drive);
-        // SmartDashboard.putNumber("Turn", turn);
     }
 }

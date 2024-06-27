@@ -6,24 +6,11 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
-import java.util.List;
-
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.Timer;
-
-import frc.robot.RobotContainer;
-
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -37,7 +24,6 @@ public class Robot extends TimedRobot {
   private RobotContainer m_robotContainer;
   public static String GameStage = "";
   
-  private Trajectory m_trajectory;
   private final Timer m_timer = new Timer();
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -52,7 +38,6 @@ public class Robot extends TimedRobot {
     m_robotContainer = new RobotContainer();
 
     // Calculate trajectory from one point to another, given start, middle, end points and speed
-    m_trajectory = TrajectoryGenerator.generateTrajectory(new Pose2d(2,2, new Rotation2d()), List.of(), new Pose2d(6,4, new Rotation2d()), new TrajectoryConfig(2, 2));
   }
 
   /**
@@ -97,8 +82,8 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-    double elapsed = m_timer.get();
-    System.out.println(elapsed);
+    // double elapsed = m_timer.get();
+    // System.out.println(elapsed);
   }
   
   @Override
@@ -119,6 +104,9 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     // RobotContainer.m_driveCommand.execute();
+    SmartDashboard.putBoolean("Slow Mode", RobotContainer.m_drive.slow);
+    SmartDashboard.putBoolean("Fast Mode", RobotContainer.m_drive.fast);
+    SmartDashboard.putBoolean("Moving", !RobotContainer.m_controller2.getTriangleButton());
   }
 
   @Override
