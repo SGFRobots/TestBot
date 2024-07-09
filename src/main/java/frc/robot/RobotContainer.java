@@ -16,7 +16,10 @@ import frc.robot.commands.DrivewithJoysticks;
 import frc.robot.subsystems.drivetrain;
 import frc.robot.commands.Speed;
 import frc.robot.commands.Auto;
-
+import frc.robot.subsystems.intake;
+import frc.robot.commands.Intake;
+import frc.robot.subsystems.shooter;
+import frc.robot.commands.Shooter;
 
 
 public class RobotContainer {
@@ -24,7 +27,8 @@ public class RobotContainer {
   public static drivetrain m_drive;
   public static DrivewithJoysticks m_driveCommand;
   public static Speed speedControl;
-
+  public static intake m_intake;
+  public static shooter m_shooter;
 
   // Instances of controllers
   public static final XboxController m_controller = new XboxController(0);
@@ -36,6 +40,8 @@ public class RobotContainer {
     m_drive = new drivetrain();
     m_drive.setDefaultCommand(new DrivewithJoysticks(m_drive));
     speedControl = new Speed(m_drive);
+    m_intake = new intake();
+    m_shooter = new shooter();
 
     // Bind buttons and commands
     configureButtonBindings();
@@ -50,6 +56,14 @@ public class RobotContainer {
     // FastMode
     new JoystickButton(m_controller2, PS4Controller.Button.kR1.value).whileTrue(speedControl.fastMode);
     new JoystickButton(m_controller, XboxController.Button.kX.value).whileTrue(speedControl.fastMode);
+
+    // Intake
+    new JoystickButton(m_controller2, PS4Controller.Button.kSquare.value).toggleOnTrue(new Intake(m_intake));
+    new JoystickButton(m_controller, XboxController.Button.kX.value).toggleOnTrue(new Intake(m_intake));
+
+    // Shooter
+    new JoystickButton(m_controller2, PS4Controller.Button.kCross.value).toggleOnTrue(new Shooter(m_shooter));
+    new JoystickButton(m_controller, XboxController.Button.kA.value).toggleOnTrue(new Shooter(m_shooter));
   }
 
 

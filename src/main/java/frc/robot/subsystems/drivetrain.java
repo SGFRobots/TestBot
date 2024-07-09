@@ -114,7 +114,6 @@ public class drivetrain extends SubsystemBase {
             turn = getTurn();
             if(fast) {
                 fastMode();
-                System.out.println("fast");
             }
             if(slow) {
                 slowMode();
