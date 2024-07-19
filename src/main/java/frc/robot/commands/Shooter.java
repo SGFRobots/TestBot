@@ -13,14 +13,17 @@ public class Shooter extends Command{
         m_shooter = shooterSubsystem;
     }
 
+    // Autonomous
     public Shooter(shooter shooterSubsystem, double time) {
         m_shooter = shooterSubsystem;
+        // Set timer
         timeEnds = time;
         timer = new Timer();
     }
 
     @Override
     public void initialize() {
+        // Start timer - Autonomous
         if(timer != null) {
             timer.restart();
         }
@@ -40,6 +43,7 @@ public class Shooter extends Command{
 
     @Override
     public boolean isFinished() {
+        // Ends when time runs out - Autonomous
         if(timer != null) {
             if(timer.get() >= timeEnds) {
                 return true;
@@ -48,25 +52,4 @@ public class Shooter extends Command{
         return false;
     }
 
-    // public class ShooterAuto extends Command {
-    //     Timer timer;
-    //     double timeEnds;
-
-    //     public ShooterAuto(double time) {
-    //         timer = new Timer();
-    //         timeEnds = time;
-    //     }
-
-    //     @Override
-    //     public void initialize() {
-    //         timer.restart();
-    //     }
-
-    //     @Override
-    //     public void execute() {
-    //         if(timer.get() >= timeEnds) {
-    //             super.end(true);
-    //         }
-    //     }
-    // }
 }

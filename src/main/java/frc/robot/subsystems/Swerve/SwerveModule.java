@@ -56,44 +56,26 @@ public class SwerveModule {
             turningPIDController = new PIDController(0.5, 0, 0);
             turningPIDController.enableContinuousInput(-Math.PI, Math.PI);
 
-            resetEncoder();
+            // Reset all position to 0
+            driveEncoder.setPosition(0);
+            turnEncoder.setPosition(getAbsoluteEncoderRad());
 
-    }
-
-    // we probably wont need these next 4 =)
-    public double getDrivePosition() {
-        return driveEncoder.getPosition();
-    }
-
-    public double getTurningPosition() {
-        return turnEncoder.getPosition();
-    }
-
-    public double getDriveVelocity() {
-        return driveEncoder.getVelocity();
-    }
-
-    public double getTurningVelocity() {
-        return turnEncoder.getVelocity();
-    }
-
-    // Set all position to 0
-    public void resetEncoder() {
-        driveEncoder.setPosition(0);
-        turnEncoder.setPosition(getAbsoluteEncoderRad());
     }
 
     // get current angle in radians
     public double getAbsoluteEncoderRad() {
+        // Convert from speed to voltage?
         double angle = absoluteEncoder.getVoltage() / RobotController.getVoltage5V();
+        // convert to radians
         angle *= 2.0 * Math.PI;
+        
         angle -= absoluteEncoderOffset;
         return angle * (absoluteEncoderReversed ? -1.0 : 1.0);
     }
 
-    // Return the object that has all data of the position of the robot
+    // Return all data of the position of the robot
     public SwerveModuleState getState() {
-        return new SwerveModuleState(getDriveVelocity(), new Rotation2d(getTurningPosition()));
+        return new SwerveModuleState(driveEncoder.getVelocity(), new Rotation2d(turnEncoder.getPosition()));
     }
 
     // Move
@@ -103,14 +85,18 @@ public class SwerveModule {
             stop();
             return;
         }
-        //Move
-        state = SwerveModuleState.optimize(state, getState().angle);
+        // Optimize angle (turn no more than 90 degrees)
+        state = SwerveModuleState.optimize(state, getState().angle); 
+        // Set power
         driveMotor.set(state.speedMetersPerSecond / Constants.maxSpeed);
-        turnMotor.set(turningPIDController.calculate(getTurningPosition(), state.angle.getRadians()));
+        turnMotor.set(turningPIDController.calculate(turnEncoder.getPosition(), state.angle.getRadians()));
+
+        // Telemetry
         SmartDashboard.putString("Swerve[" + absoluteEncoder.getChannel() + "] state", state.toString());
 
     }
 
+    // Stop moving
     public void stop() {
         driveMotor.set(0);
         turnMotor.set(0);

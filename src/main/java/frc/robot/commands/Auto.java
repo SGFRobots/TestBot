@@ -12,18 +12,18 @@ import frc.robot.subsystems.drivetrain;
 public final class Auto extends ParallelCommandGroup {
   public drivetrain m_drive;
   
-  /** Example static factory for an autonomous command. */
+  // Call commands during autonomous
   public Auto(drivetrain drive) {
-    RobotContainer.m_shooter.stop();
-    RobotContainer.m_intake.stop();
+
+    // Run commands while Intake is always on
     addCommands(
       new Intake(RobotContainer.m_intake),
       new AutoCommands(drive)
     );
-    RobotContainer.m_shooter.stop();
-    RobotContainer.m_intake.stop();
+
     }
     
+    // Run commands in order
     public class AutoCommands extends SequentialCommandGroup {
       public AutoCommands(drivetrain drive) {
         addCommands(
