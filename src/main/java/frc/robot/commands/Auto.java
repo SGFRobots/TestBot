@@ -6,12 +6,8 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.drivetrain;
-import frc.robot.commands.Shooter;
-import frc.robot.commands.Intake;
 
 public final class Auto extends ParallelCommandGroup {
   public drivetrain m_drive;
