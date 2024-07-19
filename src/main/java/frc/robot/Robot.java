@@ -84,6 +84,9 @@ public class Robot extends TimedRobot {
   public void autonomousPeriodic() {
     // double elapsed = m_timer.get();
     // System.out.println(elapsed);
+    SmartDashboard.putBoolean("Intake", RobotContainer.m_intake.m_bottomRoller.get() != 0);
+    SmartDashboard.putBoolean("Shooter", RobotContainer.m_shooter.m_FLflywheel.get() != 0);
+
   }
   
   @Override

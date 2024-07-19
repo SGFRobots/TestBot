@@ -55,15 +55,15 @@ public class RobotContainer {
     
     // FastMode
     new JoystickButton(m_controller2, PS4Controller.Button.kR1.value).whileTrue(speedControl.fastMode);
-    new JoystickButton(m_controller, XboxController.Button.kX.value).whileTrue(speedControl.fastMode);
+    new JoystickButton(m_controller, XboxController.Button.kRightBumper.value).whileTrue(speedControl.fastMode);
 
     // Intake
     new JoystickButton(m_controller2, PS4Controller.Button.kSquare.value).toggleOnTrue(new Intake(m_intake));
     new JoystickButton(m_controller, XboxController.Button.kX.value).toggleOnTrue(new Intake(m_intake));
 
     // Shooter
-    new JoystickButton(m_controller2, PS4Controller.Button.kCross.value).toggleOnTrue(new Shooter(m_shooter));
-    new JoystickButton(m_controller, XboxController.Button.kA.value).toggleOnTrue(new Shooter(m_shooter));
+    new JoystickButton(m_controller2, PS4Controller.Button.kCircle.value).toggleOnTrue(new Shooter(m_shooter));
+    new JoystickButton(m_controller, XboxController.Button.kB.value).toggleOnTrue(new Shooter(m_shooter));
   }
 
 
