@@ -64,7 +64,7 @@ public class SwerveModule {
 
     // get current angle in radians
     public double getAbsoluteEncoderRad() {
-        // Convert from speed to voltage?
+        // Voltage applied over max voltage returns the percentage of a rotation
         double angle = absoluteEncoder.getVoltage() / RobotController.getVoltage5V();
         // convert to radians
         angle *= 2.0 * Math.PI;
