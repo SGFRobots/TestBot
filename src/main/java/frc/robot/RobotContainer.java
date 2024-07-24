@@ -34,14 +34,20 @@ public class RobotContainer {
   public static final XboxController m_controller = new XboxController(0);
   public static final PS4Controller m_controller2 = new PS4Controller(0);
 
+  // Swerve subsystem
+  private final SwerveSubsystem swerveSubsystem;
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Subsystems and commands
     m_drive = new drivetrain();
+    swerveSubsystem.setDefaultCommand(new SwerveJoystick(swerveSubsystem, m_controller));
+    swerveSubsystem = new SwerveSubsystem();
     m_drive.setDefaultCommand(new DrivewithJoysticks(m_drive));
     speedControl = new Speed(m_drive);
     m_intake = new intake();
     m_shooter = new shooter();
+
 
     // Bind buttons and commands
     configureButtonBindings();
