@@ -162,7 +162,8 @@ public final class Constants {
     public static final double kTeleDriveMaxAccelerationUnitsPerSecond = 3;
     public static final double kTeleDriveMaxAngularAccelerationUnitsPerSecond = 3;
 
-    public static final double kEncoderResolution = 0.5;
+    public static final double kEncoderResolution = 2048;
+    public static final double kWheelCircumferenceMeters = kWheelDiameterMeters * Math.PI;
 
 
 }

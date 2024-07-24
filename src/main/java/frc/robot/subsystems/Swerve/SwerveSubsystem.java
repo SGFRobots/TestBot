@@ -101,7 +101,16 @@ public class SwerveSubsystem extends SubsystemBase{
     @Override
     public void periodic() {
         // update position
-        odometer.update(getRotation2d(), modules[0].getState(), modules[1].getState(), modules[2].getState(), modules[3].getState());
+        odometer.update(getRotation2d(), new SwerveModulePosition[] {
+            modules[0].getPosition(),
+            modules[1].getPosition(),
+            modules[2].getPosition(),
+            modules[3].getPosition()});
+        // Update distances for all modules
+        for (SwerveModule module : modules) {
+            module.updateDistance();
+        }
+
         // Debug telemetry
         SmartDashboard.putNumber("Robot Heading", getHeading());
         SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());

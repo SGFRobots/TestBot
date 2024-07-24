@@ -9,6 +9,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -28,6 +29,12 @@ public class SwerveModule {
     public final boolean absoluteEncoderReversed;
     public final double absoluteEncoderOffset;
 
+    private final double encoderCountsPerRevolution; // Encoder resolution
+    private final double wheelCircumferenceMeters; // Wheel circumference in meters
+
+    private double previousPosition; // Store previous position to calculate delta distance
+    private double totalDistance; // Track the total distance traveled
+
     public SwerveModule(
         int drivePort, int turnPort, boolean driveReversed, boolean turnReversed, int absoluteEncoderPort, double absoluteEncoderOffset, boolean absoluteEncoderReversed) {
 
@@ -36,6 +43,12 @@ public class SwerveModule {
             turnMotor = new CANSparkMax(turnPort, MotorType.kBrushless);
             driveMotor.setInverted(driveReversed);
             turnMotor.setInverted(turnReversed);
+
+            // Distance Calculation Things
+            this.encoderCountsPerRevolution = Constants.kEncoderResolution;
+            this.wheelCircumferenceMeters = Constants.kWheelCircumferenceMeters;
+            this.previousPosition = 0.0;
+            this.totalDistance = 0.0;
 
             // Encoders
             driveEncoder = driveMotor.getEncoder();
@@ -76,6 +89,42 @@ public class SwerveModule {
     // Return all data of the position of the robot
     public SwerveModuleState getState() {
         return new SwerveModuleState(driveEncoder.getVelocity(), new Rotation2d(turnEncoder.getPosition()));
+    }
+
+    public void updateDistance(){
+        // Get the current encoder position
+        double currentPosition = driveEncoder.getPosition(); // This returns counts
+
+        // Calculate the delta distance
+        double deltaCounts = currentPosition - previousPosition;
+        double deltaDistance = (deltaCounts / encoderCountsPerRevolution) * wheelCircumferenceMeters;
+
+        // Update total distance
+        totalDistance += deltaDistance;
+
+        // Update previous position
+        previousPosition = currentPosition;
+    }
+
+    public double getDriveDistance() {
+        return totalDistance;
+    }
+
+    public double getTurningAngle(){
+        double rawCounts = turnEncoder.getPosition();
+
+        double countsPerRevolution = encoderCountsPerRevolution;
+        double angleInRadians = (rawCounts / countsPerRevolution) * 2 * Math.PI;
+
+        return angleInRadians;
+    }
+
+    // Return the module position as a position object
+    public SwerveModulePosition getPosition() {
+        return new SwerveModulePosition(
+            getDriveDistance(),
+            new Rotation2d(getTurningAngle())
+        );
     }
 
     // Move
