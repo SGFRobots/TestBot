@@ -106,24 +106,11 @@ public class SwerveModule {
         previousPosition = currentPosition;
     }
 
-    public double getDriveDistance() {
-        return totalDistance;
-    }
-
-    public double getTurningAngle(){
-        double rawCounts = turnEncoder.getPosition();
-
-        double countsPerRevolution = encoderCountsPerRevolution;
-        double angleInRadians = (rawCounts / countsPerRevolution) * 2 * Math.PI;
-
-        return angleInRadians;
-    }
-
-    // Return the module position as a position object
+    // Return the module position as a SwerveModulePosition instance
     public SwerveModulePosition getPosition() {
         return new SwerveModulePosition(
-            getDriveDistance(),
-            new Rotation2d(getTurningAngle())
+            totalDistance,
+            new Rotation2d(getAbsoluteEncoderRad())
         );
     }
 
