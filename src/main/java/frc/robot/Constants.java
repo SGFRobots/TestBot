@@ -4,7 +4,8 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.geometry.Translation2d;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -97,9 +98,10 @@ public final class Constants {
     //Autos
     
     //Swerve
-    public static final double kWheelDiameterMeters = 0.5;
-    public static final double kDriveMotorGearRatio= 1;
-    public static final double kTurningMotorGearRatio =1;
+    public static final double kWheelRadius = .0508;
+    public static final double kWheelDiameterMeters = 0.1016;
+    public static final double kDriveMotorGearRatio= 6.12;
+    public static final double kTurningMotorGearRatio =150/7;
     public static final double kDriveEncoderRot2Meter = kDriveMotorGearRatio * Math.PI * kWheelDiameterMeters;
     public static final double kTurningEncoderRot2Rad = kTurningMotorGearRatio * 2 * Math.PI;
     public static final double kDriveEncoderRPM2MeterPerSec = kDriveEncoderRot2Meter / 60;
@@ -140,9 +142,9 @@ public final class Constants {
     public static final double kFrontRightDriveAbsoluteEncoderOffsetRad = -1.816;
     public static final double kBackRightDriveAbsoluteEncoderOffsetRad = -4.811;
 
-    public static final double kTrackWidth = Units.inchesToMeters(25.25);
+    public static final double kTrackWidth = 0.64;
     // Distance between right and left wheels
-    public static final double kWheelBase = Units.inchesToMeters(25.25);
+    public static final double kWheelBase = 0.64;
     // Distance between front and back wheels
     public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
             new Translation2d(kWheelBase / 2, -kTrackWidth / 2),
@@ -159,6 +161,8 @@ public final class Constants {
     public static final double kTeleDriveMaxAngularSpeedRadiansPerSecond = kPhysicalMaxAngularSpeedRadiansPerSecond / 4;
     public static final double kTeleDriveMaxAccelerationUnitsPerSecond = 3;
     public static final double kTeleDriveMaxAngularAccelerationUnitsPerSecond = 3;
+
+    public static final double kEncoderResolution = 0.5;
 
 
 }

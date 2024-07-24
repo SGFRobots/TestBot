@@ -20,6 +20,8 @@ import frc.robot.subsystems.intake;
 import frc.robot.commands.Intake;
 import frc.robot.subsystems.shooter;
 import frc.robot.commands.Shooter;
+// import frc.robot.subsystems.Swerve.SwerveSubsystem;
+// import frc.robot.commands.SwerveJoystick;
 
 
 public class RobotContainer {
@@ -35,14 +37,14 @@ public class RobotContainer {
   public static final PS4Controller m_controller2 = new PS4Controller(0);
 
   // Swerve subsystem
-  private final SwerveSubsystem swerveSubsystem;
+  // private final SwerveSubsystem swerveSubsystem;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Subsystems and commands
     m_drive = new drivetrain();
-    swerveSubsystem.setDefaultCommand(new SwerveJoystick(swerveSubsystem, m_controller));
-    swerveSubsystem = new SwerveSubsystem();
+    // swerveSubsystem = new SwerveSubsystem();
+    // swerveSubsystem.setDefaultCommand(new SwerveJoystick(swerveSubsystem, m_controller));
     m_drive.setDefaultCommand(new DrivewithJoysticks(m_drive));
     speedControl = new Speed(m_drive);
     m_intake = new intake();

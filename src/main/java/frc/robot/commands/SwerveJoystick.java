@@ -1,20 +1,21 @@
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.SwerveSubsystem;
-import java.util.function.Supplier;
-import edu.wpi.first.wpilibj.SlewRateLimiter;
-import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj2.command.Command;
+// import java.util.function.Supplier;
+import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
+
+import frc.robot.Constants;
+import frc.robot.subsystems.Swerve.SwerveSubsystem;
 
 
 import edu.wpi.first.wpilibj.XboxController;
 
-public class SwerveJoystick extends CommandBase{
+public class SwerveJoystick extends Command {
     
     private final SwerveSubsystem swerveSubsystem;
-    private final Supplier<Double> xSpdFunction, ySpdFunction, turningSpdFunction;
-    private final Supplier<Boolean> fieldOriented;
+    // private final Supplier<Boolean> fieldOrientedFunction;
     private final SlewRateLimiter xLimiter, yLimiter, turningLimiter;
     private final XboxController controller;
 
@@ -22,10 +23,7 @@ public class SwerveJoystick extends CommandBase{
     XboxController controller) {
         this.swerveSubsystem = swerveSubsystem;
         this.controller = controller;
-        this.xSpdFunction = xSpdFunction;
-        this.ySpdFunction = ySpdFunction;
-        this.turningSpdFunction = turningSpdFunction;
-        this.fieldOrientedFunction = fieldOrientedFunction;
+        // this.fieldOrientedFunction = controller.;
         this.xLimiter = new SlewRateLimiter(Constants.kTeleDriveMaxAccelerationUnitsPerSecond);
         this.yLimiter = new SlewRateLimiter(Constants.kTeleDriveMaxAccelerationUnitsPerSecond);
         this.turningLimiter = new SlewRateLimiter(Constants.kTeleDriveMaxAngularAccelerationUnitsPerSecond);
@@ -39,7 +37,7 @@ public class SwerveJoystick extends CommandBase{
     @Override
     public void execute() {
         // Get joystick inputs
-        double xSpeed = controller.getLeftX()
+        double xSpeed = controller.getLeftX();
         double ySpeed = controller.getLeftY();
         double turningSpeed = controller.getRightX();
         
@@ -55,17 +53,17 @@ public class SwerveJoystick extends CommandBase{
 
         // Set desire chassis speeds
         ChassisSpeeds chassisSpeed;
-        if (fieldOrientedFunction.get()) {
+        // if (fieldOrientedFunction.get()) {
             // Relative to field
             chassisSpeed = ChassisSpeeds.fromFieldRelativeSpeeds(
                 xSpeed, ySpeed, turningSpeed, swerveSubsystem.getRotation2d());
-        } else {
+        // } else {
             // Relative to robot
-            chassisSpeed = new ChassisSpeeds(xSpeed, ySpeed, turningSpeed);
-        }
+            // chassisSpeed = new ChassisSpeeds(xSpeed, ySpeed, turningSpeed);
+        // }
 
         // Convert chassis speeds to module states
-        SwerveModuleState[] moduleStates = Constants.kDriveKinematics.toSwerveModuleState(chassisSpeed);
+        SwerveModuleState[] moduleStates = Constants.kDriveKinematics.toSwerveModuleStates(chassisSpeed);
 
         // Drive
         swerveSubsystem.setModuleStates(moduleStates);

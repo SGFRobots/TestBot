@@ -88,7 +88,7 @@ public class SwerveModule {
         // Optimize angle (turn no more than 90 degrees)
         state = SwerveModuleState.optimize(state, getState().angle); 
         // Set power
-        driveMotor.set(state.speedMetersPerSecond / Constants.maxSpeed);
+        driveMotor.set(state.speedMetersPerSecond / Constants.kPhysicalMaxSpeedMetersPerSecond);
         turnMotor.set(turningPIDController.calculate(turnEncoder.getPosition(), state.angle.getRadians()));
 
         // Telemetry

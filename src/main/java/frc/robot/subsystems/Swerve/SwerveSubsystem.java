@@ -1,17 +1,25 @@
 package frc.robot.subsystems.Swerve;
 
 import com.kauailabs.navx.frc.AHRS;
-import edu.wpi.first.wpilibj.kinematics.SwerveDriveOdometry;
-import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
+
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.Swerve.SwerveModule;
+import frc.robot.Constants;
 
 
-public class SwerveSubsystem {
+public class SwerveSubsystem extends SubsystemBase{
     // Make instances of all 4 modules
     private final SwerveModule[] modules = {
         // Front Left
-        new ServeModule(
+        new SwerveModule(
             Constants.kFrontLeftDriveMotorPort,
             Constants.kFrontLeftTurningMotorPort,
             Constants.kFrontLeftDriveEncoderReversed,
@@ -21,7 +29,7 @@ public class SwerveSubsystem {
             Constants.kFrontLeftDriveAbsoluteEncoderReversed),
         
         // Front Right
-        new ServeModule(
+        new SwerveModule(
             Constants.kFrontRightDriveMotorPort,
             Constants.kFrontRightTurningMotorPort,
             Constants.kFrontRightDriveEncoderReversed,
@@ -31,7 +39,7 @@ public class SwerveSubsystem {
             Constants.kFrontRightDriveAbsoluteEncoderReversed),
         
         // Back Left
-        new ServeModule(
+        new SwerveModule(
             Constants.kBackLeftDriveMotorPort,
             Constants.kBackLeftTurningMotorPort,
             Constants.kBackLeftDriveEncoderReversed,
@@ -41,7 +49,7 @@ public class SwerveSubsystem {
             Constants.kBackLeftDriveAbsoluteEncoderReversed),
         
         // Back Right
-        new ServeModule(
+        new SwerveModule(
             Constants.kBackRightDriveMotorPort,
             Constants.kBackRightTurningMotorPort,
             Constants.kBackRightDriveEncoderReversed,
@@ -50,12 +58,18 @@ public class SwerveSubsystem {
             Constants.kBackRightDriveAbsoluteEncoderOffsetRad,
             Constants.kBackRightDriveAbsoluteEncoderReversed),
         
-    }
+    };
 
     // Position stored in gyro and odometer
     private final AHRS gyro = new AHRS(SPI.Port.kMXP);
     private final SwerveDriveOdometry odometer = new SwerveDriveOdometry(Constants.kDriveKinematics,
-            new Rotation2d(0));
+        new Rotation2d(0), 
+        new SwerveModulePosition[] {
+            modules[0].getPosition(),
+            modules[1].getPosition(),
+            modules[2].getPosition(),
+            modules[3].getPosition()
+        }, new Pose2d(5.0, 13.5, new Rotation2d()));
 
     // =)
     public SwerveSubsystem() {
@@ -75,7 +89,7 @@ public class SwerveSubsystem {
     }
 
     // Get direction robot is facing
-    public Roataion2d getRotation2d() {
+    public Rotation2d getRotation2d() {
         return Rotation2d.fromDegrees(getHeading());
     }
 
@@ -89,8 +103,8 @@ public class SwerveSubsystem {
         // update position
         odometer.update(getRotation2d(), modules[0].getState(), modules[1].getState(), modules[2].getState(), modules[3].getState());
         // Debug telemetry
-        SmartDashboard.putNumber('Robot Heading', getHeading());
-        SmartDashboard.putNumber('Robot Location', getPose().getTranslation().toString());
+        SmartDashboard.putNumber("Robot Heading", getHeading());
+        SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
     }
 
     // Stop the robot
@@ -103,10 +117,10 @@ public class SwerveSubsystem {
     // DRIVE the robot
     public void setModuleStates(SwerveModuleState[] desiredStates) {
         // Set speed to max if go over max speed
-        SwerveDriveKinematics.normalizeWheelSpeeds(desiredStates, Constants.maxSpeed);
+        SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, Constants.kPhysicalMaxSpeedMetersPerSecond);
         // Move modules
         for (int i = 0; i < modules.length; i++) {
-            modules[i].setDesiredState(desiredStates[i])
+            modules[i].setDesiredState(desiredStates[i]);
         }
     }
 }
