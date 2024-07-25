@@ -94,8 +94,8 @@ public class drivetrain extends SubsystemBase {
         slot0Configs.kD = 0.001; // A velocity of 1 rps results in 0.1 V output
         leftMotor.getConfigurator().apply(slot0Configs);
         rightMotor.getConfigurator().apply(slot0Configs);
-        m_leftEncoder.setDistancePerPulse(2*Math.PI*Constants.kWheelRadius/Constants.kEncoderResolution);
-        m_rightEncoder.setDistancePerPulse(2*Math.PI*Constants.kWheelRadius/Constants.kEncoderResolution);
+        m_leftEncoder.setDistancePerPulse(2*Math.PI*Constants.kWheelRadius/Constants.kDriveEncoderResolution);
+        m_rightEncoder.setDistancePerPulse(2*Math.PI*Constants.kWheelRadius/Constants.kDriveEncoderResolution);
         m_leftEncoder.reset();
         m_rightEncoder.reset();
         SmartDashboard.putData("Field", m_fieldSim);

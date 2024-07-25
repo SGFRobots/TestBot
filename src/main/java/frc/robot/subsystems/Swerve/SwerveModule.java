@@ -29,8 +29,6 @@ public class SwerveModule {
     public final boolean absoluteEncoderReversed;
     public final double absoluteEncoderOffset;
 
-    private final double encoderCountsPerRevolution; // Encoder resolution
-    private final double wheelCircumferenceMeters; // Wheel circumference in meters
 
     private double previousPosition; // Store previous position to calculate delta distance
     private double totalDistance; // Track the total distance traveled
@@ -44,9 +42,6 @@ public class SwerveModule {
             driveMotor.setInverted(driveReversed);
             turnMotor.setInverted(turnReversed);
 
-            // Distance Calculation Things
-            this.encoderCountsPerRevolution = Constants.kEncoderResolution;
-            this.wheelCircumferenceMeters = Constants.kWheelCircumferenceMeters;
             this.previousPosition = 0.0;
             this.totalDistance = 0.0;
 
@@ -97,7 +92,7 @@ public class SwerveModule {
 
         // Calculate the delta distance
         double deltaCounts = currentPosition - previousPosition;
-        double deltaDistance = (deltaCounts / encoderCountsPerRevolution) * wheelCircumferenceMeters;
+        double deltaDistance = (deltaCounts / Constants.kDriveEncoderResolution) * Constants.kWheelCircumferenceMeters;
 
         // Update total distance
         totalDistance += deltaDistance;
