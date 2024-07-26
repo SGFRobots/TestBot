@@ -50,10 +50,10 @@ public class SwerveModule {
             turnEncoder = turnMotor.getEncoder();
 
             // Conversions
-            driveEncoder.setPositionConversionFactor(Constants.kDriveEncoderRot2Meter);
-            driveEncoder.setVelocityConversionFactor(Constants.kDriveEncoderRPM2MeterPerSec);
-            turnEncoder.setPositionConversionFactor(Constants.kTurningEncoderRot2Rad);
-            turnEncoder.setVelocityConversionFactor(Constants.kTurningEncoderRPM2RadPerSec);
+            driveEncoder.setPositionConversionFactor(Constants.Swerve.Mechanical.kDriveEncoderRot2Meter);
+            driveEncoder.setVelocityConversionFactor(Constants.Swerve.Mechanical.kDriveEncoderRPM2MeterPerSec);
+            turnEncoder.setPositionConversionFactor(Constants.Swerve.Mechanical.kTurningEncoderRot2Rad);
+            turnEncoder.setVelocityConversionFactor(Constants.Swerve.Mechanical.kTurningEncoderRPM2RadPerSec);
 
             // Absolute Encoder
             absoluteEncoder = new AnalogInput(absoluteEncoderPort);
@@ -92,7 +92,7 @@ public class SwerveModule {
 
         // Calculate the delta distance
         double deltaCounts = currentPosition - previousPosition;
-        double deltaDistance = (deltaCounts / Constants.kDriveEncoderResolution) * Constants.kWheelCircumferenceMeters;
+        double deltaDistance = (deltaCounts / Constants.Swerve.Mechanical.kDriveEncoderResolution) * Constants.Swerve.Mechanical.kWheelCircumferenceMeters;
 
         // Update total distance
         totalDistance += deltaDistance;
@@ -119,7 +119,7 @@ public class SwerveModule {
         // Optimize angle (turn no more than 90 degrees)
         state = SwerveModuleState.optimize(state, getState().angle); 
         // Set power
-        driveMotor.set(state.speedMetersPerSecond / Constants.kPhysicalMaxSpeedMetersPerSecond);
+        driveMotor.set(state.speedMetersPerSecond / Constants.Swerve.Mechanical.kPhysicalMaxSpeedMetersPerSecond);
         turnMotor.set(turningPIDController.calculate(turnEncoder.getPosition(), state.angle.getRadians()));
 
         // Telemetry

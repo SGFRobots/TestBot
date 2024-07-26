@@ -18,10 +18,10 @@ public class shooter extends SubsystemBase{
 
     public shooter() {
         // Motors
-        m_FLflywheel = new CANSparkMax(Constants.frontLeftFlywheelMotor, MotorType.kBrushless);
-        m_FRflywheel = new CANSparkMax(Constants.frontRightFlywheelMotor, MotorType.kBrushless);
-        m_BLflywheel = new CANSparkMax(Constants.backLeftFlywheelMotor, MotorType.kBrushless);
-        m_BRflywheel = new CANSparkMax(Constants.backRightFlywheelMotor, MotorType.kBrushless);
+        m_FLflywheel = new CANSparkMax(Constants.MotorPorts.frontLeftFlywheelMotor, MotorType.kBrushless);
+        m_FRflywheel = new CANSparkMax(Constants.MotorPorts.frontRightFlywheelMotor, MotorType.kBrushless);
+        m_BLflywheel = new CANSparkMax(Constants.MotorPorts.backLeftFlywheelMotor, MotorType.kBrushless);
+        m_BRflywheel = new CANSparkMax(Constants.MotorPorts.backRightFlywheelMotor, MotorType.kBrushless);
 
         // Set direction
         m_FLflywheel.setInverted(false);

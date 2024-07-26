@@ -60,10 +60,10 @@ public class drivetrain extends SubsystemBase {
 
     public drivetrain() {
         // Motors, encoders, gyro
-        leftMotor = new TalonFX(Constants.leftMotorPort);
-        rightMotor = new TalonFX(Constants.rightMotorPort);
-        leftFollowerMotor = new TalonFX(Constants.leftFollowerMotorPort);
-        rightFollowerMotor = new TalonFX(Constants.rightFollowerMotorPort);
+        leftMotor = new TalonFX(Constants.MotorPorts.leftMotorPort);
+        rightMotor = new TalonFX(Constants.MotorPorts.rightMotorPort);
+        leftFollowerMotor = new TalonFX(Constants.MotorPorts.leftFollowerMotorPort);
+        rightFollowerMotor = new TalonFX(Constants.MotorPorts.rightFollowerMotorPort);
         m_leftEncoder = new Encoder(0, 1);
         m_rightEncoder = new Encoder(2, 3);
         m_gyro = new AnalogGyro(0);
@@ -73,7 +73,7 @@ public class drivetrain extends SubsystemBase {
         m_leftEncoderSim = new EncoderSim(m_leftEncoder);
         m_rightEncoderSim = new EncoderSim(m_rightEncoder);
         m_drivetrainSystem = LinearSystemId.identifyDrivetrainSystem(1.98,0.2,1.5,0.3);
-        m_DrivetrainSimulator = new DifferentialDrivetrainSim(m_drivetrainSystem,DCMotor.getCIM(2),8,Constants.kTrackWidth,Constants.kWheelRadius,null);
+        m_DrivetrainSimulator = new DifferentialDrivetrainSim(m_drivetrainSystem,DCMotor.getCIM(2),8,Constants.Swerve.Mechanical.kTrackWidth,Constants.Swerve.Mechanical.kWheelRadius,null);
 
         // stuff - editors note, this really helps!
 
@@ -94,8 +94,8 @@ public class drivetrain extends SubsystemBase {
         slot0Configs.kD = 0.001; // A velocity of 1 rps results in 0.1 V output
         leftMotor.getConfigurator().apply(slot0Configs);
         rightMotor.getConfigurator().apply(slot0Configs);
-        m_leftEncoder.setDistancePerPulse(2*Math.PI*Constants.kWheelRadius/Constants.kDriveEncoderResolution);
-        m_rightEncoder.setDistancePerPulse(2*Math.PI*Constants.kWheelRadius/Constants.kDriveEncoderResolution);
+        m_leftEncoder.setDistancePerPulse(2*Math.PI*Constants.Swerve.Mechanical.kWheelRadius/Constants.Swerve.Mechanical.kDriveEncoderResolution);
+        m_rightEncoder.setDistancePerPulse(2*Math.PI*Constants.Swerve.Mechanical.kWheelRadius/Constants.Swerve.Mechanical.kDriveEncoderResolution);
         m_leftEncoder.reset();
         m_rightEncoder.reset();
         SmartDashboard.putData("Field", m_fieldSim);
@@ -109,7 +109,7 @@ public class drivetrain extends SubsystemBase {
     
     // Drive function
     public void drive() {
-        if(!RobotContainer.m_controller.getYButton() && !RobotContainer.m_controller2.getTriangleButton()) {
+        if(!RobotContainer.m_controller.getYButton()) {
             drive = getDrive();
             turn = getTurn();
             if(fast) {
@@ -128,19 +128,17 @@ public class drivetrain extends SubsystemBase {
 
     // Get Drive value
     public double getDrive() {
-        if (((RobotContainer.m_controller2.getLeftY() < 0.09) && (RobotContainer.m_controller2.getLeftY() > -0.09)) && (RobotContainer.m_controller.getLeftY() < 0.09) && (RobotContainer.m_controller.getLeftY() > -0.09)) {
+        if ((RobotContainer.m_controller.getLeftY() < 0.09) && (RobotContainer.m_controller.getLeftY() > -0.09)) {
             return 0;
         }
-        drive = -driveFilter.calculate(RobotContainer.m_controller2.getLeftY()) / 2;
         drive = -driveFilter.calculate(RobotContainer.m_controller.getLeftY()) / 2;
         return drive;
     }
     // Get Turn value
     public double getTurn() {
-        if (((RobotContainer.m_controller2.getRightX() < 0.09) && (RobotContainer.m_controller2.getRightX() > -0.09)) && (RobotContainer.m_controller.getRightX() < 0.09) && (RobotContainer.m_controller.getRightX() > -0.09)) {
+        if ((RobotContainer.m_controller.getRightX() < 0.09) && (RobotContainer.m_controller.getRightX() > -0.09)) {
             return 0;
         }
-        turn = -turnFilter.calculate(RobotContainer.m_controller2.getRightX()) / 2;
         turn = -turnFilter.calculate(RobotContainer.m_controller.getRightX()) / 2;
         // System.out.println(turn);
         return turn;

@@ -20,49 +20,49 @@ public class SwerveSubsystem extends SubsystemBase{
     private final SwerveModule[] modules = {
         // Front Left
         new SwerveModule(
-            Constants.kFrontLeftDriveMotorPort,
-            Constants.kFrontLeftTurningMotorPort,
-            Constants.kFrontLeftDriveEncoderReversed,
-            Constants.kFrontLeftTurningEncoderReversed,
-            Constants.kFrontLeftDriveAbsoluteEncoderPort,
-            Constants.kFrontLeftDriveAbsoluteEncoderOffsetRad,
-            Constants.kFrontLeftDriveAbsoluteEncoderReversed),
+            Constants.Swerve.MotorPorts.kFrontLeftDriveMotorPort,
+            Constants.Swerve.MotorPorts.kFrontLeftTurningMotorPort,
+            Constants.Swerve.Reversed.kFrontLeftDriveEncoderReversed,
+            Constants.Swerve.Reversed.kFrontLeftTurningEncoderReversed,
+            Constants.Swerve.MotorPorts.kFrontLeftDriveAbsoluteEncoderPort,
+            Constants.Swerve.Mechanical.kFrontLeftDriveAbsoluteEncoderOffsetRad,
+            Constants.Swerve.Reversed.kFrontLeftDriveAbsoluteEncoderReversed),
         
         // Front Right
         new SwerveModule(
-            Constants.kFrontRightDriveMotorPort,
-            Constants.kFrontRightTurningMotorPort,
-            Constants.kFrontRightDriveEncoderReversed,
-            Constants.kFrontRightTurningEncoderReversed,
-            Constants.kFrontRightDriveAbsoluteEncoderPort,
-            Constants.kFrontRightDriveAbsoluteEncoderOffsetRad,
-            Constants.kFrontRightDriveAbsoluteEncoderReversed),
+            Constants.Swerve.MotorPorts.kFrontRightDriveMotorPort,
+            Constants.Swerve.MotorPorts.kFrontRightTurningMotorPort,
+            Constants.Swerve.Reversed.kFrontRightDriveEncoderReversed,
+            Constants.Swerve.Reversed.kFrontRightTurningEncoderReversed,
+            Constants.Swerve.MotorPorts.kFrontRightDriveAbsoluteEncoderPort,
+            Constants.Swerve.Mechanical.kFrontRightDriveAbsoluteEncoderOffsetRad,
+            Constants.Swerve.Reversed.kFrontRightDriveAbsoluteEncoderReversed),
         
         // Back Left
         new SwerveModule(
-            Constants.kBackLeftDriveMotorPort,
-            Constants.kBackLeftTurningMotorPort,
-            Constants.kBackLeftDriveEncoderReversed,
-            Constants.kBackLeftTurningEncoderReversed,
-            Constants.kBackLeftDriveAbsoluteEncoderPort,
-            Constants.kBackLeftDriveAbsoluteEncoderOffsetRad,
-            Constants.kBackLeftDriveAbsoluteEncoderReversed),
+            Constants.Swerve.MotorPorts.kBackLeftDriveMotorPort,
+            Constants.Swerve.MotorPorts.kBackLeftTurningMotorPort,
+            Constants.Swerve.Reversed.kBackLeftDriveEncoderReversed,
+            Constants.Swerve.Reversed.kBackLeftTurningEncoderReversed,
+            Constants.Swerve.MotorPorts.kBackLeftDriveAbsoluteEncoderPort,
+            Constants.Swerve.Mechanical.kBackLeftDriveAbsoluteEncoderOffsetRad,
+            Constants.Swerve.Reversed.kBackLeftDriveAbsoluteEncoderReversed),
         
         // Back Right
         new SwerveModule(
-            Constants.kBackRightDriveMotorPort,
-            Constants.kBackRightTurningMotorPort,
-            Constants.kBackRightDriveEncoderReversed,
-            Constants.kBackRightTurningEncoderReversed,
-            Constants.kBackRightDriveAbsoluteEncoderPort,
-            Constants.kBackRightDriveAbsoluteEncoderOffsetRad,
-            Constants.kBackRightDriveAbsoluteEncoderReversed),
+            Constants.Swerve.MotorPorts.kBackRightDriveMotorPort,
+            Constants.Swerve.MotorPorts.kBackRightTurningMotorPort,
+            Constants.Swerve.Reversed.kBackRightDriveEncoderReversed,
+            Constants.Swerve.Reversed.kBackRightTurningEncoderReversed,
+            Constants.Swerve.MotorPorts.kBackRightDriveAbsoluteEncoderPort,
+            Constants.Swerve.Mechanical.kBackRightDriveAbsoluteEncoderOffsetRad,
+            Constants.Swerve.Reversed.kBackRightDriveAbsoluteEncoderReversed),
         
     };
 
     // Position stored in gyro and odometer
     private final AHRS gyro = new AHRS(SPI.Port.kMXP);
-    private final SwerveDriveOdometry odometer = new SwerveDriveOdometry(Constants.kDriveKinematics,
+    private final SwerveDriveOdometry odometer = new SwerveDriveOdometry(Constants.Swerve.Mechanical.kDriveKinematics,
         new Rotation2d(0), 
         new SwerveModulePosition[] {
             modules[0].getPosition(),
@@ -126,7 +126,7 @@ public class SwerveSubsystem extends SubsystemBase{
     // DRIVE the robot
     public void setModuleStates(SwerveModuleState[] desiredStates) {
         // Set speed to max if go over max speed
-        SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, Constants.kPhysicalMaxSpeedMetersPerSecond);
+        SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, Constants.Swerve.Mechanical.kPhysicalMaxSpeedMetersPerSecond);
         // Move modules
         for (int i = 0; i < modules.length; i++) {
             modules[i].setDesiredState(desiredStates[i]);

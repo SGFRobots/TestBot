@@ -24,9 +24,9 @@ public class SwerveJoystick extends Command {
         this.swerveSubsystem = swerveSubsystem;
         this.controller = controller;
         // this.fieldOrientedFunction = controller.;
-        this.xLimiter = new SlewRateLimiter(Constants.kTeleDriveMaxAccelerationUnitsPerSecond);
-        this.yLimiter = new SlewRateLimiter(Constants.kTeleDriveMaxAccelerationUnitsPerSecond);
-        this.turningLimiter = new SlewRateLimiter(Constants.kTeleDriveMaxAngularAccelerationUnitsPerSecond);
+        this.xLimiter = new SlewRateLimiter(Constants.Swerve.Mechanical.kTeleDriveMaxAccelerationUnitsPerSecond);
+        this.yLimiter = new SlewRateLimiter(Constants.Swerve.Mechanical.kTeleDriveMaxAccelerationUnitsPerSecond);
+        this.turningLimiter = new SlewRateLimiter(Constants.Swerve.Mechanical.kTeleDriveMaxAngularAccelerationUnitsPerSecond);
         addRequirements(swerveSubsystem);
     }
 
@@ -42,14 +42,14 @@ public class SwerveJoystick extends Command {
         double turningSpeed = controller.getRightX();
         
         // Apply Deadzone
-        xSpeed = Math.abs(xSpeed) > Constants.kDeadzone ? xSpeed : 0.0;
-        ySpeed = Math.abs(ySpeed) > Constants.kDeadzone ? ySpeed : 0.0;
-        turningSpeed = Math.abs(turningSpeed) > Constants.kDeadzone ? turningSpeed : 0.0;
+        xSpeed = Math.abs(xSpeed) > Constants.Swerve.Mechanical.kDeadzone ? xSpeed : 0.0;
+        ySpeed = Math.abs(ySpeed) > Constants.Swerve.Mechanical.kDeadzone ? ySpeed : 0.0;
+        turningSpeed = Math.abs(turningSpeed) > Constants.Swerve.Mechanical.kDeadzone ? turningSpeed : 0.0;
 
         // Make Driving Smoother (No Wheelies)
-        xSpeed = xLimiter.calculate(xSpeed) * Constants.kTeleDriveMaxSpeedMetersPerSecond;
-        ySpeed = yLimiter.calculate(ySpeed) * Constants.kTeleDriveMaxSpeedMetersPerSecond;
-        turningSpeed = turningLimiter.calculate(turningSpeed) * Constants.kTeleDriveMaxAngularSpeedRadiansPerSecond;
+        xSpeed = xLimiter.calculate(xSpeed) * Constants.Swerve.Mechanical.kTeleDriveMaxSpeedMetersPerSecond;
+        ySpeed = yLimiter.calculate(ySpeed) * Constants.Swerve.Mechanical.kTeleDriveMaxSpeedMetersPerSecond;
+        turningSpeed = turningLimiter.calculate(turningSpeed) * Constants.Swerve.Mechanical.kTeleDriveMaxAngularSpeedRadiansPerSecond;
 
         // Set desire chassis speeds
         ChassisSpeeds chassisSpeed;
@@ -63,7 +63,7 @@ public class SwerveJoystick extends Command {
         // }
 
         // Convert chassis speeds to module states
-        SwerveModuleState[] moduleStates = Constants.kDriveKinematics.toSwerveModuleStates(chassisSpeed);
+        SwerveModuleState[] moduleStates = Constants.Swerve.Mechanical.kDriveKinematics.toSwerveModuleStates(chassisSpeed);
 
         // Drive
         swerveSubsystem.setModuleStates(moduleStates);

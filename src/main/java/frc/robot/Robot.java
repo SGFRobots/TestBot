@@ -109,7 +109,7 @@ public class Robot extends TimedRobot {
     // RobotContainer.m_driveCommand.execute();
     SmartDashboard.putBoolean("Slow Mode", RobotContainer.m_drive.slow);
     SmartDashboard.putBoolean("Fast Mode", RobotContainer.m_drive.fast);
-    SmartDashboard.putBoolean("Moving", !RobotContainer.m_controller2.getTriangleButton());
+    SmartDashboard.putBoolean("Moving", !RobotContainer.m_controller.getYButton());
     SmartDashboard.putBoolean("Intake", RobotContainer.m_intake.m_bottomRoller.get() != 0);
     SmartDashboard.putBoolean("Shooter", RobotContainer.m_shooter.m_FLflywheel.get() != 0);
 
