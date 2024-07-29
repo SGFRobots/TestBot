@@ -9,7 +9,6 @@ public class DrivewithJoysticks extends Command {
     drivetrain m_drive;
     
     public DrivewithJoysticks(drivetrain drive) {
-        // create the drive train system. didn't we already do this?
         m_drive = drive;
         addRequirements(m_drive); // what??
     }

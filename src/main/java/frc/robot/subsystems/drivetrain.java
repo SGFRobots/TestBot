@@ -109,7 +109,7 @@ public class drivetrain extends SubsystemBase {
     
     // Drive function
     public void drive() {
-        if(!RobotContainer.m_controller.getYButton()) {
+        if(!RobotContainer.m_controller.getRawButton(Constants.Controllers.ButtonYPort)) {
             drive = getDrive();
             turn = getTurn();
             if(fast) {
@@ -128,18 +128,20 @@ public class drivetrain extends SubsystemBase {
 
     // Get Drive value
     public double getDrive() {
-        if ((RobotContainer.m_controller.getLeftY() < 0.09) && (RobotContainer.m_controller.getLeftY() > -0.09)) {
+        double controllerPower = RobotContainer.m_controller.getRawAxis(Constants.Controllers.LeftYPort);
+        if ((controllerPower < 0.09) && (controllerPower > -0.09)) {
             return 0;
         }
-        drive = -driveFilter.calculate(RobotContainer.m_controller.getLeftY()) / 2;
+        drive = -driveFilter.calculate(controllerPower) / 2;
         return drive;
     }
     // Get Turn value
     public double getTurn() {
-        if ((RobotContainer.m_controller.getRightX() < 0.09) && (RobotContainer.m_controller.getRightX() > -0.09)) {
+         double controllerPower = RobotContainer.m_controller.getRawAxis(Constants.Controllers.RightXPort);
+        if ((controllerPower < 0.09) && (controllerPower > -0.09)) {
             return 0;
         }
-        turn = -turnFilter.calculate(RobotContainer.m_controller.getRightX()) / 2;
+        turn = turnFilter.calculate(controllerPower) / 2;
         // System.out.println(turn);
         return turn;
     }

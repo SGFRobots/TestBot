@@ -53,7 +53,7 @@ public class shooter extends SubsystemBase{
     }
 
     // Autonomous shooting
-    public void autoShoot(double power) {
+    public void shoot(double power) {
         m_FLflywheel.set(power);
         m_FRflywheel.set(power);
         m_BLflywheel.set(power);

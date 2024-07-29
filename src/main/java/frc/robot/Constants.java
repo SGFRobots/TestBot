@@ -5,6 +5,8 @@
 package frc.robot;
 
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.math.geometry.Translation2d;
 
 /**
@@ -45,22 +47,47 @@ public final class Constants {
     
     public static final class Controllers {
         // Controller 1
-        public static final int buttonDPort = 4;
-        public static final int buttonAPort = 3;
-        public static final int buttonGPort = 5;
-        public static final int buttonHPort = 6;
-        public static final int switchFPort = 2;
-        public static final int switchCPort = 7;
-        public static final int driveAxis = 1;//Y-Stick Left
-        public static final int turnAxis = 3;//X-Stick Right
-        public static final int intakeAxis = 4;//Y-Stick Right
+        // public static final int buttonDPort = 4;
+        // public static final int buttonAPort = 3;
+        // public static final int buttonGPort = 5;
+        // public static final int buttonHPort = 6;
+        // public static final int switchFPort = 2;
+        // public static final int switchCPort = 7;
+        // public static final int driveAxis = 1;//Y-Stick Left
+        // public static final int turnAxis = 3;//X-Stick Right
+        // public static final int intakeAxis = 4;//Y-Stick Right
         
         // Controller 2
-        public static final int buttonBPort2 = 2;
-        public static final int buttonYPort2 = 4;
-        public static final int buttonLeftBumperPort2 = 5;
-        public static final int LHookAxisPort2 = 1;
-        public static final int RHookAxisPort2 = 5;
+        // public static final int buttonBPort2 = 2;
+        // public static final int buttonYPort2 = 4;
+        // public static final int buttonLeftBumperPort2 = 5;
+        // public static final int LHookAxisPort2 = 1;
+        // public static final int RHookAxisPort2 = 5;
+
+        // XBox Controller
+        public static final int LeftXPort = 0;
+        public static final int LeftYPort = 1;
+        public static final int LeftTriggerPort = 2;
+        public static final int RightTriggerPort = 3;
+        public static final int RightXPort = 4;
+        public static final int RightYPort = 5;
+
+        public static final int ButtonAPort = 1;
+        public static final int ButtonBPort = 2;
+        public static final int ButtonXPort = 3;
+        public static final int ButtonYPort = 4;
+        public static final int LeftBumper = 5;
+        public static final int RightBumper = 6;
+
+        public static final class XBox {
+            public static final Button buttonA = XboxController.Button.kA;
+            public static final Button buttonB = XboxController.Button.kB;
+            public static final Button buttonX = XboxController.Button.kX;
+            public static final Button buttonY = XboxController.Button.kY;
+            public static final Button leftBumper = XboxController.Button.kLeftBumper;
+            public static final Button rightBumper = XboxController.Button.kRightBumper;
+        }
+
 
         // Utility
         public static final int GenericHIDPort = 0;

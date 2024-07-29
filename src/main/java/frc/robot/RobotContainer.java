@@ -56,16 +56,18 @@ public class RobotContainer {
   // Assign buttons to commands
   private void configureButtonBindings() {
     // SlowMode
-    new JoystickButton(m_controller, XboxController.Button.kLeftBumper.value).whileTrue(speedControl.slowMode);
+    new JoystickButton(m_controller, Constants.Controllers.XBox.leftBumper.value).whileTrue(speedControl.slowMode);
     
     // FastMode
-    new JoystickButton(m_controller, XboxController.Button.kRightBumper.value).whileTrue(speedControl.fastMode);
+    new JoystickButton(m_controller, Constants.Controllers.XBox.rightBumper.value).whileTrue(speedControl.fastMode);
 
     // Intake
-    new JoystickButton(m_controller, XboxController.Button.kX.value).toggleOnTrue(new Intake(m_intake));
+    new JoystickButton(m_controller, Constants.Controllers.XBox.buttonX.value).toggleOnTrue(new Intake(m_intake));
 
     // Shooter
-    new JoystickButton(m_controller, XboxController.Button.kB.value).toggleOnTrue(new Shooter(m_shooter));
+    new JoystickButton(m_controller, Constants.Controllers.XBox.buttonB.value).toggleOnTrue(new Shooter(m_shooter, 1.0));
+
+    new JoystickButton(m_controller, Constants.Controllers.XBox.buttonA.value).toggleOnTrue(new Shooter(m_shooter, 0.3));
   }
 
 

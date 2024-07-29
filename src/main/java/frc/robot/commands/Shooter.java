@@ -8,14 +8,21 @@ public class Shooter extends Command{
     public final shooter m_shooter;
     public Timer timer;
     public double timeEnds;
+    public double power = 1;
 
-    public Shooter(shooter shooterSubsystem) {
+    // public Shooter(shooter shooterSubsystem) {
+    //     m_shooter = shooterSubsystem;
+    // }
+
+    public Shooter(shooter shooterSubsystem, double power) {
         m_shooter = shooterSubsystem;
+        this.power = power;
     }
 
     // Autonomous
-    public Shooter(shooter shooterSubsystem, double time) {
+    public Shooter(shooter shooterSubsystem, double power, double time) {
         m_shooter = shooterSubsystem;
+        this.power = power;
         // Set timer
         timeEnds = time;
         timer = new Timer();
@@ -32,7 +39,7 @@ public class Shooter extends Command{
     @Override
     // Shoot
     public void execute() {
-        m_shooter.shoot();
+        m_shooter.shoot(power);
     }
 
     @Override

@@ -28,7 +28,7 @@ public final class Auto extends ParallelCommandGroup {
       public AutoCommands(drivetrain drive) {
         addCommands(
           new AutoDrive(drive, 2, 0),
-          new Shooter(RobotContainer.m_shooter, 1.0),
+          new Shooter(RobotContainer.m_shooter, 1.0, 1.0),
           new AutoDrive(drive, 0, 90),
           new AutoDrive(drive, 5, -35),
           new AutoDrive(drive, -1, 0),
