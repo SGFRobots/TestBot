@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -36,10 +37,11 @@ public class Robot extends TimedRobot {
     Mechanism2d mech = new Mechanism2d(3, 3);
     SmartDashboard.putData("Mech2d", mech);
     m_robotContainer = new RobotContainer();
-
+    CameraServer.startAutomaticCapture();
+    
     // Calculate trajectory from one point to another, given start, middle, end points and speed
   }
-
+  
   /**
    * This function is called every 20 ms, no matter the mode. Use this for items like diagnostics
    * that you want ran during disabled, autonomous, teleoperated and test.
@@ -53,6 +55,12 @@ public class Robot extends TimedRobot {
     // commands, running already-scheduled commands, removing finished or interrupted commands,
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
+    SmartDashboard.putBoolean("Slow Mode", RobotContainer.m_drive.slow);
+    SmartDashboard.putBoolean("Fast Mode", RobotContainer.m_drive.fast);
+    SmartDashboard.putBoolean("Moving", !RobotContainer.m_controller.getYButton());
+    SmartDashboard.putBoolean("Intake", RobotContainer.m_intake.m_bottomRoller.get() != 0);
+    SmartDashboard.putBoolean("Shooter", RobotContainer.m_shooter.m_FLflywheel.get() != 0);
+
     CommandScheduler.getInstance().run();
   }
 
@@ -84,8 +92,6 @@ public class Robot extends TimedRobot {
   public void autonomousPeriodic() {
     // double elapsed = m_timer.get();
     // System.out.println(elapsed);
-    SmartDashboard.putBoolean("Intake", RobotContainer.m_intake.m_bottomRoller.get() != 0);
-    SmartDashboard.putBoolean("Shooter", RobotContainer.m_shooter.m_FLflywheel.get() != 0);
 
   }
   
@@ -107,11 +113,6 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     // RobotContainer.m_driveCommand.execute();
-    SmartDashboard.putBoolean("Slow Mode", RobotContainer.m_drive.slow);
-    SmartDashboard.putBoolean("Fast Mode", RobotContainer.m_drive.fast);
-    SmartDashboard.putBoolean("Moving", !RobotContainer.m_controller.getYButton());
-    SmartDashboard.putBoolean("Intake", RobotContainer.m_intake.m_bottomRoller.get() != 0);
-    SmartDashboard.putBoolean("Shooter", RobotContainer.m_shooter.m_FLflywheel.get() != 0);
 
   }
 
