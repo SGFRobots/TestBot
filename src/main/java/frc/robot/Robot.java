@@ -60,7 +60,6 @@ public class Robot extends TimedRobot {
     SmartDashboard.putBoolean("Moving", !RobotContainer.m_controller.getYButton());
     SmartDashboard.putBoolean("Intake", RobotContainer.m_intake.m_bottomRoller.get() != 0);
     SmartDashboard.putBoolean("Shooter", RobotContainer.m_shooter.m_FLflywheel.get() != 0);
-
     CommandScheduler.getInstance().run();
   }
 
