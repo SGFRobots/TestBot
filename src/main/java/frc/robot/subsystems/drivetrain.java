@@ -132,7 +132,7 @@ public class drivetrain extends SubsystemBase {
         if ((controllerPower < 0.09) && (controllerPower > -0.09)) {
             return 0;
         }
-        drive = -driveFilter.calculate(controllerPower) / 2;
+        drive = driveFilter.calculate(controllerPower) / 2;
         return drive;
     }
     // Get Turn value
